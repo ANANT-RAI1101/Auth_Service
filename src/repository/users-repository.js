@@ -5,7 +5,7 @@ class UserRepository{
     async create(data){
         try {
             const user= await User.create(data);
-            return user;
+            return user.email;
         } catch (error) {
             console.log("error at repository layer");
             throw error;
@@ -22,6 +22,30 @@ class UserRepository{
         } catch (error) {
             console.log("error at repository layer");
             throw error;
+        }
+    }
+
+    async getById(userId){
+        try {
+            const response=await User.findByPk({
+                where:{
+                    id:userId
+                }
+            })
+        } catch (error) {
+            
+        }
+    }
+    async getByEmail(userEmail){
+        try {
+            const response=await User.findOne({
+                where:{
+                    email:userEmail
+                }
+            })
+            return response;
+        } catch (error) {
+            
         }
     }
 }
