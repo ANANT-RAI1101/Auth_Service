@@ -11,18 +11,31 @@ module.exports = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull:false,
-        unique:true,
+        allowNull: false,
+        unique: true,
         validate: {
-        isEmail: true,          
+          isEmail: true,
         }
       },
       password: {
         type: Sequelize.STRING,
-         allowNull: false,
+        allowNull: false,
         validate: {
           len: [8, 100]
         }
+      },
+      isVerified: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
+      verificationToken: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      verificationTokenExpiry: {
+        type: Sequelize.DATE,
+        allowNull: true
       },
       createdAt: {
         allowNull: false,

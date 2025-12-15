@@ -30,7 +30,20 @@ module.exports = (sequelize, DataTypes) => {
     validate: {
         len: [8, 100]
       }
-    } 
+    },
+    isVerified:{
+       type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false
+    },
+    verificationToken:{
+      type: DataTypes.STRING,
+      allowNull: true
+    }, 
+    verificationTokenExpiry:{
+      type: DataTypes.DATE,
+      allowNull: true
+    }
   }, {
     sequelize,
     modelName: 'User',

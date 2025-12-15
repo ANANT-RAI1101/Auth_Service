@@ -19,6 +19,7 @@ class UserRepository{
                     id:userId
                 }
             })
+            throw response;
         } catch (error) {
             console.log("error at repository layer");
             throw error;
@@ -32,8 +33,23 @@ class UserRepository{
                     id:userId
                 }
             })
+            return response;
         } catch (error) {
-            
+            console.log("error at repository layer");
+            throw error;
+        }
+    }
+    async getByToken(token){
+        try {
+            const response=await User.findOne({
+                where:{
+                    verificationToken:token
+                }
+            })
+            return response;
+        } catch (error) {
+            console.log("error at repository layer here",error);
+            throw error
         }
     }
     async getByEmail(userEmail){
@@ -45,7 +61,21 @@ class UserRepository{
             })
             return response;
         } catch (error) {
-            
+            console.log("error at repository layer");
+            throw error;
+        }
+    }
+    async update(userId,data){
+        try {
+            const response=await User.update(data,{
+                where:{
+                    id:userId
+                }
+            })
+            return response;
+        } catch (error) {
+            console.log("error at repository layer at update");
+            throw error
         }
     }
 }
