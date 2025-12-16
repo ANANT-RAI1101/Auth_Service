@@ -1,4 +1,5 @@
 const{User}=require("../models/index")
+const AppErrors=require("../helper/app-errors")
 
 class UserRepository{
 
@@ -7,8 +8,11 @@ class UserRepository{
             const user= await User.create(data);
             return user.email;
         } catch (error) {
-            console.log("error at repository layer");
-            throw error;
+            if(error.name== 'SequelizeValidationError'){
+                throw new AppErrors(
+                     error.errors[0].message,
+                     400);
+            }
         }
     }
 
@@ -19,6 +23,9 @@ class UserRepository{
                     id:userId
                 }
             })
+            if(!response){
+                throw new AppErrors("no user found so cant able to delete",404)
+            }
             return response;
         } catch (error) {
             console.log("error at repository layer");
@@ -28,11 +35,14 @@ class UserRepository{
 
     async getById(userId){
         try {
-            const response=await User.findByPk({
+            const response=await User.findOne({
                 where:{
                     id:userId
                 }
             })
+            if(!response){
+                throw new AppErrors("no user found ",404)
+            }
             return response;
         } catch (error) {
             console.log("error at repository layer");

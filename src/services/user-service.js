@@ -124,6 +124,21 @@ class UserService {
             throw error;
         }
     }
+    async isAdmin(userId){
+        try {
+            const user=await this.userRepository.getById(userId);
+            const userRole=await Role.findOne({
+                where:{
+                    name:"ADMIN"
+                }
+            });
+            return  user.hasRole(userRole);
+        } catch (error) {
+            console.log("error at service layer");
+            throw error;
+            
+        }
+    }
 
     createToken(user) {
         try {

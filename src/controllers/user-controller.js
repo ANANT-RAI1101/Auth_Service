@@ -63,6 +63,25 @@ const destroy = async (req, res) => {
     }
 }
 
+const isAdmin=async (req,res)=>{
+    try {
+        const response=await userService.isAdmin(req.params.id);
+        return res.status(200).json({
+            data: response,
+            err: {},
+            success: true,
+            message: "he is admin"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            data: {},
+            err: error ,
+            success: false,
+            message: "he is not admin"
+        })
+    }
+}
+
 const signIn = async (req, res) => {
     try {
         const response = await userService.signIn(req.body.email, req.body.password);
@@ -109,5 +128,6 @@ module.exports = {
     destroy,
     signIn,
     isAuthenticated,
-    verifyEmail
+    verifyEmail,
+    isAdmin
 }
