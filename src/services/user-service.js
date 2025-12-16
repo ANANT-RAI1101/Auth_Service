@@ -1,6 +1,7 @@
 const UserRepository = require("../repository/users-repository")
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { Role } = require('../models/index');
 const { sendVerificationEmail } = require('../helper/mail-service')
 
 const bcrypt = require('bcrypt');
@@ -15,7 +16,7 @@ class UserService {
     async create(data) {
         try {
             const user = await this.userRepository.getByEmail(data.email);
-
+            console.log(user)
             if (user) {
                 if (user.isVerified) {
                     throw new Error('Email already registered');
@@ -26,6 +27,8 @@ class UserService {
                     verificationToken: token,
                     verificationTokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000)
                 });
+                const userRole=await Role.findByPk(2);
+                await user.addRole(userRole)
                 await sendVerificationEmail(data.email, token);
                 return user;
             }
@@ -36,6 +39,9 @@ class UserService {
                 verificationToken: token,
                 verificationTokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000)
             });
+            const userRole=await Role.findByPk(2);
+            const USER = await this.userRepository.getByEmail(data.email);
+            await USER.addRole(userRole)
             await sendVerificationEmail(data.email, token);
             return result;
 

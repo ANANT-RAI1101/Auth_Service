@@ -19,7 +19,7 @@ class UserRepository{
                     id:userId
                 }
             })
-            throw response;
+            return response;
         } catch (error) {
             console.log("error at repository layer");
             throw error;
@@ -78,6 +78,8 @@ class UserRepository{
             throw error
         }
     }
+
+
 }
 
 module.exports=UserRepository;
