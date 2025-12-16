@@ -30,3 +30,43 @@
 
 - to generate user table run `npx sequelize model:generate --name user --attributes email:String,password:String`
 - after that figure out some migration attributes and mode user.js file based on your requirement of email and password and run `npx sequelize db:migrate`
+
+- Role Table
+
+- to generate role table repeat the above steps 
+
+- but do association before migrate
+  - in user model
+  ```
+  static associate(models) {
+      this.belongsToMany(models.Role,{
+        through:'User_Roles'
+      })
+    }
+  ```
+  - in role model
+  ``` 
+  static associate(models) {
+      this.belongsToMany(models.User,{
+        through:'User_Roles'
+      })
+    }
+  ```
+
+- established many to many relation through `User_Roles` table
+
+## API Endpoints(/api/v1)
+
+#### Auth
+
+- POST `/api/v1/signup` → Register new user
+
+- POST `/api/v1/signIn` → User login 
+
+- GET `/api/v1/isAuthenticated` → Check if user is authenticated
+
+- GET `/api/v1/isAdmin/:id` → Check if user has admin role
+
+- GET `/api/v1/verify-email` → Verify user email
+
+- DELETE `/api/v1/delete/:id `→ Delete user account
