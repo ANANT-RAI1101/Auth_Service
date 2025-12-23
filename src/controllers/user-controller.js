@@ -1,4 +1,5 @@
 const UserService = require("../services/user-service")
+const { StatusCodes } = require('http-status-codes')
 
 const userService = new UserService();
 
@@ -8,7 +9,7 @@ const create = async (req, res) => {
             email: req.body.email,
             password: req.body.password
         });
-        return res.status(201).json({
+        return res.status(StatusCodes.OK).json({
             data: response,
             err: {},
             success: true,
@@ -17,18 +18,18 @@ const create = async (req, res) => {
     } catch (error) {
         console.log(error);               
         console.log(error.errors); 
-        return res.status(500).json({
-            data: {},
-            err: error.message,
+        return res.status(error.statusCode).json({
+             message: error.message,
             success: false,
-            message: "user is not created"
+            data: {},
+            err: error.explanation
         })
     }
 }
 const verifyEmail = async (req, res) => {
     try {
         const response = await userService.verifyEmail(req.query.token);
-        return res.status(200).json({
+        return res.status(StatusCodes.OK).json({
             data: response,
             err: {},
             success: true,
@@ -36,29 +37,29 @@ const verifyEmail = async (req, res) => {
         });
     }
     catch (error) {
-        return res.status(500).json({
-            data: {},
-            err: error.message,
+        return res.status(error.statusCode).json({
+             message: error.message,
             success: false,
-            message: "email not verified"
+            data: {},
+            err: error.explanation
         })
     }
 }
 const destroy = async (req, res) => {
     try {
         const response = await userService.destroy(req.params.id);
-        return res.status(200).json({
+        return res.status(StatusCodes.OK).json({
             data: response,
             err: {},
             success: true,
             message: "user is deleted"
         })
     } catch (error) {
-        return res.status(500).json({
-            data: {},
-            err: { error },
+        return res.status(error.statusCode).json({
+             message: error.message,
             success: false,
-            message: "user is not deleted"
+            data: {},
+            err: error.explanation
         })
     }
 }
@@ -66,7 +67,7 @@ const destroy = async (req, res) => {
 const isAdmin=async (req,res)=>{
     try {
         const response=await userService.isAdmin(req.params.id);
-        return res.status(200).json({
+        return res.status(StatusCodes.OK).json({
             data: response,
             err: {},
             success: true,
@@ -74,10 +75,10 @@ const isAdmin=async (req,res)=>{
         })
     } catch (error) {
         return res.status(500).json({
-            data: {},
-            err: error ,
+             message: error.message,
             success: false,
-            message: "he is not admin"
+            data: {},
+            err: error.explanation
         })
     }
 }
@@ -85,7 +86,7 @@ const isAdmin=async (req,res)=>{
 const signIn = async (req, res) => {
     try {
         const response = await userService.signIn(req.body.email, req.body.password);
-        return res.status(200).json({
+        return res.status(StatusCodes.OK).json({
             data: response,
             success: true,
             message: "user got signed in",
@@ -93,11 +94,11 @@ const signIn = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            data: {},
+        return res.status(error.statusCode).json({
+             message: error.message,
             success: false,
-            message: "user is not signed in",
-            err: { error }
+            data: {},
+            err: error.explanation
         })
     }
 }
@@ -106,7 +107,7 @@ const isAuthenticated = async (req, res) => {
     try {
         const token = req.headers['x-access-token'];
         const response = await userService.isAuthenticated(token);
-        return res.status(200).json({
+        return res.status(StatusCodes.OK).json({
             data: response,
             success: true,
             message: "user is authenticated",
@@ -114,11 +115,11 @@ const isAuthenticated = async (req, res) => {
         });
     } catch (error) {
         console.log(error)
-        return res.status(500).json({
-            data: {},
+        return res.status(error.statusCode).json({
+             message: error.message,
             success: false,
-            message: "user is not authenticated",
-            err: {}
+            data: {},
+            err: error.explanation
         });
     }
 }

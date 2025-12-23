@@ -1,9 +1,18 @@
-class AppErrors extends Error{
-    constructor(message,statusCode){
-            super(message);
-            this.explanation=message;
-            this.statusCode=statusCode;
+const {StatusCodes}=require("http-status-codes")
+
+class AppError extends Error{
+    constructor(
+        name,
+        message,
+        explanation,
+        statusCode
+    ){
+    super()
+    this.name=name
+    this.message=message,
+    this.explanation=explanation,
+    this.statusCode=statusCode
     }
 }
 
-module.exports=AppErrors;
+module.exports=AppError;

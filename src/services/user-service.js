@@ -2,7 +2,10 @@ const UserRepository = require("../repository/users-repository")
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { Role } = require('../models/index');
-const { sendVerificationEmail } = require('../helper/mail-service')
+const { sendVerificationEmail } = require('../helper/mail-service');
+const AppError = require("../helper/app-errors");
+const ServiceError=require("../helper/service-error");
+
 
 const bcrypt = require('bcrypt');
 const { JWT_KEY } = require('../config/serverConfig');
@@ -46,8 +49,14 @@ class UserService {
             return result;
 
         } catch (error) {
-            console.log("error at service layer");
-            throw error;
+            if(error.name=="SequelizeValidationError"||error.name=="Repository Error"){
+                throw error;
+            }
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
 
@@ -67,7 +76,11 @@ class UserService {
             });
             return response;
         } catch (error) {
-
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
     async destroy(userId) {
@@ -75,8 +88,11 @@ class UserService {
             const response = await this.userRepository.destroy(userId);
             return response;
         } catch (error) {
-            console.log("error at service layer");
-            throw error;
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
 
@@ -103,8 +119,11 @@ class UserService {
             return newJWT;
 
         } catch (error) {
-            console.log("Something went wrong in the sign in process");
-            throw error;
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
 
@@ -120,8 +139,11 @@ class UserService {
             }
             return user.id;
         } catch (error) {
-            console.log("Something went wrong in the auth process");
-            throw error;
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
     async isAdmin(userId){
@@ -134,8 +156,11 @@ class UserService {
             });
             return  user.hasRole(userRole);
         } catch (error) {
-            console.log("error at service layer");
-            throw error;
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
             
         }
     }
@@ -145,8 +170,11 @@ class UserService {
             const result = jwt.sign(user, JWT_KEY, { expiresIn: '1d' });
             return result;
         } catch (error) {
-            console.log("error in creation of token");
-            throw error;
+             throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
 
     }
@@ -155,16 +183,22 @@ class UserService {
             const response = jwt.verify(token, JWT_KEY);
             return response;
         } catch (error) {
-            console.log("error in validation  of token");
-            throw error;
+             throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
     comparePassword(userPlainPassword, encryptedPassword) {
         try {
             return bcrypt.compareSync(userPlainPassword, encryptedPassword)
         } catch (error) {
-            console.log("error in comparison  of password");
-            throw error;
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
         }
     }
 }
