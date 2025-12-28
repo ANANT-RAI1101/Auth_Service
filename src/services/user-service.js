@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { Role } = require('../models/index');
 const { sendVerificationEmail } = require('../helper/mail-service');
 const AppError = require("../helper/app-errors");
-const ServiceError=require("../helper/service-error");
+const ServiceError = require("../helper/service-error");
 
 
 const bcrypt = require('bcrypt');
@@ -30,7 +30,7 @@ class UserService {
                     verificationToken: token,
                     verificationTokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000)
                 });
-                const userRole=await Role.findByPk(2);
+                const userRole = await Role.findByPk(2);
                 await user.addRole(userRole)
                 await sendVerificationEmail(data.email, token);
                 return user;
@@ -42,14 +42,14 @@ class UserService {
                 verificationToken: token,
                 verificationTokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000)
             });
-            const userRole=await Role.findByPk(2);
+            const userRole = await Role.findByPk(2);
             const USER = await this.userRepository.getByEmail(data.email);
             await USER.addRole(userRole)
             await sendVerificationEmail(data.email, token);
             return result;
 
         } catch (error) {
-            if(error.name=="SequelizeValidationError"||error.name=="Repository Error"){
+            if (error.name == "SequelizeValidationError" || error.name == "Repository Error") {
                 throw error;
             }
             throw new ServiceError(
@@ -96,7 +96,23 @@ class UserService {
         }
     }
 
-    async signIn(email, userPlainPassword) {
+    async getUser(userId) {
+        try {
+            const response = await this.userRepository.getById(userId);
+            if (!response) {
+                throw new Error("User not found");
+            }
+            return response;
+        } catch (error) {
+            throw new ServiceError(
+                error.message,
+                error.explanation,
+                error.statusCode
+            )
+        }
+    }
+
+    async signIn(email, userPlainPassword) { 
         try {
 
             const user = await this.userRepository.getByEmail(email);
@@ -146,22 +162,22 @@ class UserService {
             )
         }
     }
-    async isAdmin(userId){
+    async isAdmin(userId) {
         try {
-            const user=await this.userRepository.getById(userId);
-            const userRole=await Role.findOne({
-                where:{
-                    name:"ADMIN"
+            const user = await this.userRepository.getById(userId);
+            const userRole = await Role.findOne({
+                where: {
+                    name: "ADMIN"
                 }
             });
-            return  user.hasRole(userRole);
+            return user.hasRole(userRole);
         } catch (error) {
             throw new ServiceError(
                 error.message,
                 error.explanation,
                 error.statusCode
             )
-            
+
         }
     }
 
@@ -170,7 +186,7 @@ class UserService {
             const result = jwt.sign(user, JWT_KEY, { expiresIn: '1d' });
             return result;
         } catch (error) {
-             throw new ServiceError(
+            throw new ServiceError(
                 error.message,
                 error.explanation,
                 error.statusCode
@@ -183,7 +199,7 @@ class UserService {
             const response = jwt.verify(token, JWT_KEY);
             return response;
         } catch (error) {
-             throw new ServiceError(
+            throw new ServiceError(
                 error.message,
                 error.explanation,
                 error.statusCode

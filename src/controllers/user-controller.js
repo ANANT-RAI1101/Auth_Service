@@ -16,14 +16,34 @@ const create = async (req, res) => {
             message: "user is created"
         })
     } catch (error) {
-        console.log(error);               
-        console.log(error.errors); 
+        console.log(error);
+        console.log(error.errors);
         return res.status(error.statusCode).json({
-             message: error.message,
+            message: error.message,
             success: false,
             data: {},
             err: error.explanation
         })
+    }
+}
+
+const getUser = async (req, res) => {
+    try {
+        const response = await userService.getUser(req.params.id);
+        return res.status(StatusCodes.OK).json({
+            data: response,
+            err: {},
+            success: true,
+            message: "fetched user"
+        });
+    }
+    catch (error) {
+        return res.status(error.statusCode).json({
+            message: error.message,
+            success: false,
+            data: {},
+            err: error.explanation
+        });
     }
 }
 const verifyEmail = async (req, res) => {
@@ -38,7 +58,7 @@ const verifyEmail = async (req, res) => {
     }
     catch (error) {
         return res.status(error.statusCode).json({
-             message: error.message,
+            message: error.message,
             success: false,
             data: {},
             err: error.explanation
@@ -56,7 +76,7 @@ const destroy = async (req, res) => {
         })
     } catch (error) {
         return res.status(error.statusCode).json({
-             message: error.message,
+            message: error.message,
             success: false,
             data: {},
             err: error.explanation
@@ -64,9 +84,9 @@ const destroy = async (req, res) => {
     }
 }
 
-const isAdmin=async (req,res)=>{
+const isAdmin = async (req, res) => {
     try {
-        const response=await userService.isAdmin(req.params.id);
+        const response = await userService.isAdmin(req.params.id);
         return res.status(StatusCodes.OK).json({
             data: response,
             err: {},
@@ -75,7 +95,7 @@ const isAdmin=async (req,res)=>{
         })
     } catch (error) {
         return res.status(500).json({
-             message: error.message,
+            message: error.message,
             success: false,
             data: {},
             err: error.explanation
@@ -95,7 +115,7 @@ const signIn = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(error.statusCode).json({
-             message: error.message,
+            message: error.message,
             success: false,
             data: {},
             err: error.explanation
@@ -116,7 +136,7 @@ const isAuthenticated = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(error.statusCode).json({
-             message: error.message,
+            message: error.message,
             success: false,
             data: {},
             err: error.explanation
@@ -130,5 +150,6 @@ module.exports = {
     signIn,
     isAuthenticated,
     verifyEmail,
-    isAdmin
+    isAdmin,
+    getUser
 }

@@ -8,6 +8,7 @@ router.post('/signIn',AuthRequestMiddlewares.validateUserAuth,UserController.sig
 router.get('/isAuthenticated',UserController.isAuthenticated);
 router.get('/isAdmin/:id',UserController.isAdmin);
 router.get('/verify-email',UserController.verifyEmail);
+router.get('/user/:id',UserController.getUser);
 router.delete('/delete/:id',UserController.destroy);
 
 module.exports = router;
