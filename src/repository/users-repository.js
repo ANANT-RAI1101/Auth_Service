@@ -103,20 +103,12 @@ class UserRepository {
     }
     async getByEmail(userEmail) {
         try {
-            const response = await User.findOne({
+            return await User.findOne({
                 where: {
                     email: userEmail
                 }
             });
-            if (!response) {
-                throw new AppError(
-                    "Not Found",
-                    "Resource not found",
-                    "The requested record doesn't exist",
-                    StatusCodes.NOT_FOUND
-                );
-            }
-            return response;
+            
         } catch (error) {
             if (error instanceof AppError) throw error;
             throw new AppError(
